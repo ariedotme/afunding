@@ -18,3 +18,5 @@ Cargo.lock
 
 **/out/
 **/env.rs
+**/broadcast
+**/cache
