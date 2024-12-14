@@ -18,7 +18,7 @@ use crate::env;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Campaign {
     id: u128,
-    creator: String, // Convert the `Address` to a readable string
+    creator: String,
     title: String,
     description: String,
     goal: f64,
@@ -86,9 +86,8 @@ fn HomePage() -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState not found");
     let (block_number, set_block_number) = signal(None);
 
-    // Fetch the block number when the component is mounted
     create_effect(move |_| {
-        let web3 = state.web3.clone(); // Clone web3 to avoid moving it
+        let web3 = state.web3.clone();
         spawn_local(async move {
             match web3.eth().block_number().await {
                 Ok(number) => set_block_number.set(Some(number.as_u64())),
@@ -208,7 +207,6 @@ fn CampaignListPage() -> impl IntoView {
                 }
             };
 
-            // Fetch campaign count
             let campaign_count: U256 = match contract
                 .query("campaignCount", (), None, Options::default(), None)
                 .await
@@ -225,7 +223,6 @@ fn CampaignListPage() -> impl IntoView {
 
             let mut fetched_campaigns = Vec::new();
 
-            // Fetch each campaign
             for i in 0..campaign_count.as_u64() {
                 log(format!("Fetching campaign at index: {}", i));
                 let campaign: (Address, String, String, U256, U256, bool) = match contract
@@ -244,7 +241,7 @@ fn CampaignListPage() -> impl IntoView {
 
                 fetched_campaigns.push(Campaign {
                     id: i as u128,
-                    creator: format!("{:?}", campaign.0), // Convert Address to String
+                    creator: format!("{:?}", campaign.0),
                     title: campaign.1,
                     description: campaign.2,
                     goal: campaign.3.as_u64() as f64,
@@ -253,7 +250,6 @@ fn CampaignListPage() -> impl IntoView {
                 });
             }
 
-            // Update the signal
             log(format!("Fetched campaigns: {:?}", fetched_campaigns));
             campaigns_signal.set(fetched_campaigns);
         });

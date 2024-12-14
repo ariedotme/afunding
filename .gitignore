@@ -20,3 +20,5 @@ Cargo.lock
 **/env.rs
 **/broadcast
 **/cache
+**/afunding-contracts/lib
+**/afunding-contracts/
